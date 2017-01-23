@@ -21,6 +21,8 @@ def config(hp, rpm, diam=None):
         print str(c) + " cells:"
         print "\tkv:   " + str(kv(rpm, c))
         print "\tamps: " + str(current(hp, c))
+    print "Power: " + str(Units.fromHp(hp)) + " W, " + str(hp) + " hp"
 
 if __name__ == "__main__":
-    config(2.7, 10000, 16)
+    config(1.8 / 0.8, 6000, 20)
+
