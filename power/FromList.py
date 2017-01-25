@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import Basic 
+import Units
 
 def line2raw(line):
     return line.strip().split(",")
@@ -53,13 +54,35 @@ def config(hp, rpm, diam=None):
         print "\tamps: " + str(current(hp, c))
     print "Power: " + str(Units.fromHp(hp)) + " W, " + str(hp) + " hp"
 
+def metrics(prop, motor):
+    metrics = {}
+    power = Units.fromHp(prop["hp"])
+    metrics["power"] = motor["power"] / power * 100.0 - 100.0
+    v = prop["rpm"] / motor["kv"]
+    propcurrent = power / v
+    metrics["current"] = motor["current"] / propcurrent * 100.0 - 100.0
+    metrics["cells"] = v / 3.7
+    metrics["mach"] = Basic.tipmach(prop["diameter"], prop["rpm"])
+    metrics["power loading"] = prop["static thrust"] / power * 1000.0
+    return metrics
+
 def match(prop, motor):
-    print "Tip Mach: " + Basic.tipmach(prop["diameter"], prop["rpm"])
-     
+    m = metrics(prop, motor)
+    if m["power"] > 20 and m["current"] > 20 and m["cells"] <= 12:
+	print "Prop: " + str(prop["diameter"])
+	print "Motor: " + str(motor["kv"]) # + " " + str(motor[")
+    	print "\tTip Mach: " + str(m["mach"])
+    	print "\tPower: " + str(m["power"])
+    	print "\tCurrent: " + str(m["current"])
+	print "\tCells: " + str(m["cells"])
+	print "\tPower Loading: " + str(m["power loading"])
+	print "\tMotor weight: " + str(motor["weight"])
+	print ""
 
 if __name__ == "__main__":
     props = file2props("props.txt")
-    print props
     motors = file2motors("motors.txt")
-    print motors
+    for p in props:
+        for m in motors:
+	    match(p, m)
 
