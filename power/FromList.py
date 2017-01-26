@@ -43,40 +43,38 @@ def file2motors(filename):
 	        motors.append(line2motor(line))
     return motors
 
-def config(hp, rpm, diam=None):
-    if diam != None:
-        tipSpeed = Units.fromInch(diam / 2.0) * Units.fromRpm(rpm)
-        print "Tip Mach: " + str(tipSpeed / 343)
-    cells = range(6, 13, 2)
-    for c in cells:
-        print str(c) + " cells:"
-        print "\tkv:   " + str(kv(rpm, c))
-        print "\tamps: " + str(current(hp, c))
-    print "Power: " + str(Units.fromHp(hp)) + " W, " + str(hp) + " hp"
+def current(prop, motor):
+    power = Units.fromHp(prop["hp"])
+    v = prop["rpm"] / motor["kv"]
+    return power / v
 
 def metrics(prop, motor):
     metrics = {}
     power = Units.fromHp(prop["hp"])
     metrics["power"] = motor["power"] / power * 100.0 - 100.0
     v = prop["rpm"] / motor["kv"]
-    propcurrent = power / v
-    metrics["current"] = motor["current"] / propcurrent * 100.0 - 100.0
+    metrics["current"] = motor["current"] / current(prop, motor) * 100.0 - 100.0
     metrics["cells"] = v / 3.7
     metrics["mach"] = Basic.tipmach(prop["diameter"], prop["rpm"])
-    metrics["power loading"] = prop["static thrust"] / power * 1000.0
+    metrics["power loading"] = prop["static thrust"] / prop["hp"]
     return metrics
+
+def constrained(prop, motor):
+    # TODO: fill in
+    return True
 
 def match(prop, motor):
     m = metrics(prop, motor)
     if m["power"] > 20 and m["current"] > 20 and m["cells"] <= 12:
 	print "Prop: " + str(prop["diameter"])
-	print "Motor: " + str(motor["kv"]) # + " " + str(motor[")
-    	print "\tTip Mach: " + str(m["mach"])
-    	print "\tPower: " + str(m["power"])
-    	print "\tCurrent: " + str(m["current"])
+	print "Motor: " + str(motor["kv"])
+        print "\tTip Mach: " + str(m["mach"])
+    	print "\tPower Margin: " + str(round(m["power"])) + "%"
+    	print "\tCurrent Margin: " + str(round(m["current"])) + "%"
+    	print "\tCurrent: " + str(current(prop, motor)) + " A"
 	print "\tCells: " + str(m["cells"])
-	print "\tPower Loading: " + str(m["power loading"])
-	print "\tMotor weight: " + str(motor["weight"])
+	print "\tPower Loading: " + str(m["power loading"]) + " lbf / hp"
+	print "\tMotor weight: " + str(motor["weight"]) + " g"
 	print ""
 
 if __name__ == "__main__":
