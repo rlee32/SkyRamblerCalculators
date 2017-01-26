@@ -59,7 +59,20 @@ def metrics(prop, motor):
     metrics["power loading"] = prop["static thrust"] / prop["hp"]
     return metrics
 
+
+def file2constraints(filename):
+    # each constraint is a 3-tuple of (field name, min, max)
+    constraints = []
+    with open(filename, 'r') as f:
+        for line in f:
+	    if not iscomment(line):
+	    	fields = line.strip().split(',')
+		if len(fields) == 3:
+	        	constraints.append((fields[0], float(fields[1]), float(fields[2])))
+    return constraints 
+
 def constrained(prop, motor):
+
     # TODO: fill in
     return True
 

@@ -1,3 +1,5 @@
 # field, min, max
 cells, 0, 9
 weight, 0, 700
+current margin
+
