@@ -28,7 +28,7 @@ def Strut(x1, y1, x2, y2):
 def myDraw():
     background(255)
     lateralDiam = 26.0
-    lateralGap = 2.0
+    lateralGap = 1.0
     
     lateralRadius = lateralDiam / 2.0
     lateralShift = lateralRadius + lateralGap / 2.0
@@ -38,7 +38,7 @@ def myDraw():
     
     medialRadius = ceil(sqrt((lateralRadius ** 2.0) / 2.0))
     medialDiam = 2.0 * medialRadius
-    medialGap = -5
+    medialGap = -7
     lateralGapMinor = 1
     
     medialShift = lateralRadius + medialGap + medialRadius

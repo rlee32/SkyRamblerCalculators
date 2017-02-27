@@ -29,10 +29,10 @@ def myDraw():
     background(255)
     diam = 20.0
     r = diam / 2.0
-    lateralGap = 1.0
-    lateralSep = 20.0
+    lateralGap = -6.0
+    lateralSep = 1.0
     medialGap = 1
-    medialSep = -3
+    medialSep = 20
     
     lateralRadius = diam / 2.0
     lateralShift = lateralRadius + lateralSep / 2.0
